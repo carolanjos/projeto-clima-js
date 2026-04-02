@@ -42,3 +42,11 @@ btnLimpar.addEventListener("click", function() {
   resultado.innerHTML = "";
   inputCidade.focus();
 });
+
+inputCidade.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    buscarClima(inputCidade.value);
+  } else {
+    null;
+  }
+});
