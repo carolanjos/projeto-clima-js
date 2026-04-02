@@ -50,3 +50,37 @@ inputCidade.addEventListener("keydown", function(event) {
     null;
   }
 });
+
+navigator.geolocation.getCurrentPosition(function(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  buscarClimaPorLocalizacao(lat, lon);
+})
+
+async function buscarClimaPorLocalizacao(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${KEY_API}&units=metric&lang=pt_br`;
+
+  if (!lat || !lon) {
+    resultado.style.display = "block";
+    resultado.innerHTML = `<p>❌ Não foi possível obter sua localização. Por favor, permita o acesso à localização ou insira o nome de uma cidade.</p>`;
+    return;
+  }
+
+  const response = await fetch(url);
+  const position = await response.json();
+
+  console.log(position); // ← adiciona essa linha
+  console.log(position.cod); // ← e essa
+
+  if (position.cod === 200) {
+    resultado.style.display = "block";
+    resultado.innerHTML = `
+      <h2>${position.name}, ${position.sys.country}</h2>
+      <p>🌡️ Temperatura: ${position.main.temp}°C</p>
+      <p>🤔 Sensação térmica: ${position.main.feels_like}°C</p>
+      <p>💧 Umidade: ${position.main.humidity}%</p>
+      <p>🌤️ ${position.weather[0].description}</p>
+      <p>💨 Vento: ${position.wind.speed} m/s</p>
+    `;
+  }
+}
